@@ -16,6 +16,7 @@ def create_backup():
     webhook_url = config.get('DEFAULT', 'WebhookURL')
     backup_file_prefix = config.get('DEFAULT', 'BackupFileNamePrefix')
     notification_message_prefix = config.get('DEFAULT', 'NotificationMessagePrefix')
+    sevenz_path = config.get('DEFAULT', 'SevenZPath')
 
     # 获取当前时间
     now = datetime.datetime.now()
@@ -33,7 +34,7 @@ def create_backup():
         shutil.copy(source_file, temp_file)
 
         # 使用7z命令创建压缩文件
-        subprocess.run(["7z", "a", backup_dir + backup_file, temp_file])
+        subprocess.run([sevenz_path, "a", backup_dir + backup_file, temp_file])
 
     print(f"{notification_message_prefix} {backup_file}")
     NotifytoWebhook(webhook_url, f"{notification_message_prefix} {backup_file}")
