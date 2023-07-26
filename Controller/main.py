@@ -279,6 +279,7 @@ class MainWindow(QMainWindow):
 
     def kill_adh(self):
         pid_string = self.execute_command("pidof AdGuardHome", False)
+        self.output_text.appendPlainText(pid_string)
         if pid_string:
             pids = pid_string.split()
             for pid in pids:
@@ -288,6 +289,7 @@ class MainWindow(QMainWindow):
 
     def kill_keep(self):
         pid_string = self.execute_command("pidof keepalived", False)
+        self.output_text.appendPlainText(pid_string)
         if pid_string:
             pids = pid_string.split()
             for pid in pids:
@@ -304,12 +306,17 @@ class MainWindow(QMainWindow):
         ssh = SSHClient(ip, config["user"], config["password"])
         command = "kill -9 " + pid
         self.output_text.appendPlainText(f"执行命令：{command}")
-        result = ssh.execute(command)
+        try:
+            result = ssh.execute(command)
+        except Exception as e:
+            self.output_text.appendPlainText(f"SSH执行错误：{str(e)}")
+            return
         ssh.close()
         if result:
             self.output_text.appendPlainText(result)
         else:
             self.output_text.appendPlainText("命令执行无返回结果")
+
 
 
 if __name__ == "__main__":
