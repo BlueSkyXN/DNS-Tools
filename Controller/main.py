@@ -277,33 +277,36 @@ class MainWindow(QMainWindow):
     def pid_keep(self):
         self.execute_command("pidof keepalived", False)
 
+
     def kill_adh(self):
         pid_string = self.execute_command("pidof AdGuardHome", False)
-        self.output_text.appendPlainText(pid_string)
         if pid_string:
             pids = pid_string.strip().split()
-            self.output_text.appendPlainText(pids)
-            for pid in pids:
+            
+        
+        for pid in pids:
+            if pid:  # Only proceed if pid is not an empty string
                 self.output_text.appendPlainText(pid)
+                self.kill_process(pid)
+        
+            if pid:  # Only proceed if pid is not an empty string
+                self.output_text.appendPlainText(pid)
+                self.kill_process(pid)
+        
                 self.kill_process(pid)
         else:
             self.output_text.appendPlainText("无法找到 AdGuardHome 进程")
 
     def kill_keep(self):
         pid_string = self.execute_command("pidof keepalived", False)
-        self.output_text.appendPlainText(pid_string)
         if pid_string:
             pids = pid_string.strip().split()
-            self.output_text.appendPlainText(pids)
             for pid in pids:
-                self.output_text.appendPlainText(pid)
                 self.kill_process(pid)
         else:
             self.output_text.appendPlainText("无法找到 keepalived 进程")
 
     def kill_process(self, pid):
-        print(f"当前执行的命令：{command}")
-    
         ip = self.ip_selector.currentText()
         if ip not in self.configs:
             self.output_text.appendPlainText("错误：未找到该IP的配置信息")
@@ -322,6 +325,7 @@ class MainWindow(QMainWindow):
             self.output_text.appendPlainText(result)
         else:
             self.output_text.appendPlainText("命令执行无返回结果")
+
 
 
 
