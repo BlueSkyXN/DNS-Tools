@@ -6,7 +6,7 @@ import sys
 import json
 
 
-class SSHClient:
+class SSHClient_v1:
     def __init__(self, host, username, password):
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -22,10 +22,29 @@ class SSHClient:
     def close(self):
         self.ssh.close()
 
+class SSHClient:
+    def __init__(self, host, username, password):
+        self.ssh = paramiko.SSHClient()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        try:
+            self.ssh.connect(host, username=username, password=password, timeout=30)
+        except Exception as e:
+            print(f"SSH连接失败: {e}")
+            return
 
-class Config:
-    # 这是一个处理配置文件的类，我们会在这里实现读取和写入配置文件的功能
-    print
+    def execute(self, command, timeout=30):
+        try:
+            stdin, stdout, stderr = self.ssh.exec_command(command, timeout=timeout)
+            result = stdout.read()
+            if not result:
+                result = stderr.read()
+            return result.decode()
+        except Exception as e:
+            print(f"命令执行失败: {e}")
+            return
+
+    def close(self):
+        self.ssh.close()
 
 
 class ConfigDialog_v1(QDialog):
@@ -82,6 +101,8 @@ class ConfigDialog(QDialog):
 
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
+
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -167,6 +188,11 @@ class MainWindow(QMainWindow):
         self.menu.addAction(self.setting_action)
         self.setting_action.triggered.connect(self.open_config_dialog)
 
+        # 清屏按钮
+        self.clear_button = QAction("清屏")
+        self.menu.addAction(self.clear_button)
+        self.clear_button.triggered.connect(self.clear_output)
+
         # IP选择下拉框
         self.ip_selector = QComboBox(self)
         self.ip_selector.addItem("请选择IP")
@@ -204,16 +230,19 @@ class MainWindow(QMainWindow):
         with open("DNS-Controller.conf", "w", encoding="utf-8") as f:
             json.dump(self.configs, f)
 
-    def execute_command(self, command):
+    def execute_command(self, command, prefix=True):
         ip = self.ip_selector.currentText()
         if ip not in self.configs:
             self.output_text.appendPlainText("错误：未找到该IP的配置信息")
             return
         config = self.configs[ip]
         ssh = SSHClient(ip, config["user"], config["password"])
-        result = ssh.execute(config["path"] + command)
+        result = ssh.execute((config["path"] + command) if prefix else command)
         ssh.close()
         self.output_text.appendPlainText(result)
+
+    def clear_output(self):
+        self.output_text.clear()
 
     # AdGuardHome commands
     def start_adh(self):
@@ -229,29 +258,29 @@ class MainWindow(QMainWindow):
         self.execute_command("/AdGuardHome -s status")
 
     def pid_adh(self):
-        self.execute_command("pidof AdGuardHome")
+        self.execute_command("pidof AdGuardHome", False)
 
     def kill_adh(self):
-        self.execute_command("killall AdGuardHome") 
+        self.execute_command("killall AdGuardHome", False)
 
     # keepalived commands
     def start_keep(self):
-        self.execute_command("service keepalived start")
+        self.execute_command("service keepalived start", False)
 
     def stop_keep(self):
-        self.execute_command("service keepalived stop")
+        self.execute_command("service keepalived stop", False)
 
     def restart_keep(self):
-        self.execute_command("service keepalived restart")
+        self.execute_command("service keepalived restart", False)
 
     def status_keep(self):
-        self.execute_command("service keepalived status")
+        self.execute_command("service keepalived status", False)
 
     def pid_keep(self):
-        self.execute_command("pidof keepalived")
+        self.execute_command("pidof keepalived", False)
 
     def kill_keep(self):
-        self.execute_command("killall keepalived")
+        self.execute_command("killall keepalived", False)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

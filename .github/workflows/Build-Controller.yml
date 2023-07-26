@@ -44,7 +44,7 @@ jobs:
           python -m pip install PyQt5 pyqt5-tools --ignore-installed
       - name: Build executable
         run: |
-          pyinstaller --onefile --hidden-import sys --hidden-import json --hidden-import paramiko --strip --name DNS-Controller Controller/main.py --distpath dist/${{ matrix.os }}
+          pyinstaller --onefile --hidden-import sys --hidden-import json --hidden-import paramiko --strip -w --name DNS-Controller Controller/main.py --distpath dist/${{ matrix.os }}
 
       - name: Upload-ubuntu-20.04
         if: ${{ matrix.os == 'ubuntu-20.04' }}
