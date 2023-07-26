@@ -1,0 +1,77 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python Build DNS-Controller
+
+on:
+   push:
+     branches: [ main ]
+   workflow_dispatch:
+
+jobs:
+  build-Auto-SQL-Query-to-CSV:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [linux, windows]
+        include:
+          - build: linux
+            os: ubuntu-20.04
+          - build: windows
+            os: windows-2019
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+
+      - name: Set commit message
+        id: set_commit
+        run: |
+          if [ "${{ matrix.os }}" == "ubuntu-20.04" ]; then
+            echo "COMMIT_MESSAGE=$(git log --format=%B -1)" >> $GITHUB_ENV
+          elif [ "${{ matrix.os }}" == "windows-2019" ]; then
+            commit_message=$(git log --format=%B -1)
+            echo "COMMIT_MESSAGE=$commit_message" >> $GITHUB_ENV
+          fi
+        shell: bash
+        env:
+          pythonLocation: /opt/hostedtoolcache/Python/3.10.11/x64
+
+      - name: Install dependencies
+        run: |
+          python -m pip install pyinstaller argparse pandas pymysql --ignore-installed
+      - name: Build executable
+        run: |
+          pyinstaller --onefile --hidden-import sys --hidden-import json --hidden-import paramiko --strip --name DNS-Controller Controller/main.py --distpath dist/${{ matrix.os }}
+
+      - name: Upload-ubuntu-20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_DNS-Controller_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/ubuntu-22.04/DNS-Controller
+          
+      - name: Upload-windows-2019
+        if: ${{ matrix.os == 'windows-2019' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_DNS-Controller_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/windows-2019/DNS-Controller.exe
+          
+      - name: Upload-ubuntu-20.04-all
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_DNS-Controller_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/ubuntu-22.04/*
+          
+      - name: Upload-windows-2019
+        if: ${{ matrix.os == 'windows-2019' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_DNS-Controller_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/windows-2019/*
