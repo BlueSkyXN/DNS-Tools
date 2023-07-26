@@ -282,7 +282,7 @@ class MainWindow(QMainWindow):
         if pid_string:
             pids = pid_string.split()
             for pid in pids:
-                self.execute_command("kill -9 " + pid, False)
+                self.kill_process(pid)
         else:
             self.output_text.appendPlainText("无法找到 AdGuardHome 进程")
 
@@ -291,9 +291,25 @@ class MainWindow(QMainWindow):
         if pid_string:
             pids = pid_string.split()
             for pid in pids:
-                self.execute_command("kill -9 " + pid, False)
+                self.kill_process(pid)
         else:
             self.output_text.appendPlainText("无法找到 keepalived 进程")
+
+    def kill_process(self, pid):
+        ip = self.ip_selector.currentText()
+        if ip not in self.configs:
+            self.output_text.appendPlainText("错误：未找到该IP的配置信息")
+            return
+        config = self.configs[ip]
+        ssh = SSHClient(ip, config["user"], config["password"])
+        command = "kill -9 " + pid
+        self.output_text.appendPlainText(f"执行命令：{command}")
+        result = ssh.execute(command)
+        ssh.close()
+        if result:
+            self.output_text.appendPlainText(result)
+        else:
+            self.output_text.appendPlainText("命令执行无返回结果")
 
 
 if __name__ == "__main__":
