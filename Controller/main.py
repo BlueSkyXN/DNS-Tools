@@ -28,9 +28,9 @@ class Config:
     print
 
 
-class ConfigDialog(QDialog):
+class ConfigDialog_v1(QDialog):
     def __init__(self, parent=None):
-        super(ConfigDialog, self).__init__(parent)
+        super(ConfigDialog_v1, self).__init__(parent)
 
         self.setWindowTitle("配置信息")
 
@@ -40,6 +40,33 @@ class ConfigDialog(QDialog):
         self.ssh_password = QLineEdit()
         self.ssh_password.setEchoMode(QLineEdit.Password)
         self.adh_path = QLineEdit()
+
+        self.config_layout.addRow(QLabel("SSH用户名:"), self.ssh_user)
+        self.config_layout.addRow(QLabel("SSH密码:"), self.ssh_password)
+        self.config_layout.addRow(QLabel("AdGuardHome路径:"), self.adh_path)
+
+        self.buttons = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel,
+            Qt.Horizontal, self)
+
+        self.config_layout.addRow(self.buttons)
+
+        self.setLayout(self.config_layout)
+
+        self.buttons.accepted.connect(self.accept)
+        self.buttons.rejected.connect(self.reject)
+
+class ConfigDialog(QDialog):
+    def __init__(self, parent=None):
+        super(ConfigDialog, self).__init__(parent)
+
+        self.setWindowTitle("配置信息")
+
+        self.config_layout = QFormLayout()
+
+        self.ssh_user = QLineEdit("root")
+        self.ssh_password = QLineEdit()
+        self.adh_path = QLineEdit("/opt/adh/AdGuardHome")
 
         self.config_layout.addRow(QLabel("SSH用户名:"), self.ssh_user)
         self.config_layout.addRow(QLabel("SSH密码:"), self.ssh_password)
