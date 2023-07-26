@@ -12,9 +12,6 @@ class Config:
     # 这是一个处理配置文件的类，我们会在这里实现读取和写入配置文件的功能
     print
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QPushButton, QLabel, QLineEdit, QVBoxLayout, QGroupBox, QFormLayout, QMenuBar, QMenu, QAction, QPlainTextEdit
-from PyQt5.QtCore import Qt
-import sys
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -88,8 +85,3 @@ if __name__ == "__main__":
     window.show()
     sys.exit(app.exec_())
 
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow()
-    sys.exit(app.exec_())
