@@ -1,6 +1,6 @@
 import paramiko
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QPushButton, QLabel, QLineEdit, QVBoxLayout, QGroupBox, QFormLayout, QMenuBar, QMenu, QAction, QPlainTextEdit, QInputDialog, QComboBox, QDialog, QDialogButtonBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QPushButton, QLabel, QLineEdit, QVBoxLayout, QGroupBox, QFormLayout, QMenuBar, QMenu, QAction, QPlainTextEdit, QInputDialog, QComboBox, QDialog, QDialogButtonBox, QIcon
 from PyQt5.QtCore import Qt
 import sys
 import json
@@ -181,17 +181,18 @@ class MainWindow(QMainWindow):
         self.menu_bar = QMenuBar()
         self.setMenuBar(self.menu_bar)
 
+        # 设置和清屏菜单
         self.menu = QMenu("设置")
         self.menu_bar.addMenu(self.menu)
 
-        self.setting_action = QAction("修改设置")
+        self.setting_action = QAction("SSH配置")
         self.menu.addAction(self.setting_action)
         self.setting_action.triggered.connect(self.open_config_dialog)
 
-        # 清屏按钮
-        self.clear_button = QAction("清屏")
-        self.menu.addAction(self.clear_button)
-        self.clear_button.triggered.connect(self.clear_output)
+        self.clear_action = QAction("清屏")
+        self.menu.addAction(self.clear_action)
+        self.clear_action.triggered.connect(self.clear_output)
+
 
         # IP选择下拉框
         self.ip_selector = QComboBox(self)
@@ -261,7 +262,7 @@ class MainWindow(QMainWindow):
         self.execute_command("pidof AdGuardHome", False)
 
     def kill_adh(self):
-        self.execute_command("killall AdGuardHome", False)
+        self.execute_command("pkill AdGuardHome", False)
 
     # keepalived commands
     def start_keep(self):
@@ -280,10 +281,14 @@ class MainWindow(QMainWindow):
         self.execute_command("pidof keepalived", False)
 
     def kill_keep(self):
-        self.execute_command("killall keepalived", False)
+        self.execute_command("pkill keepalived", False)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+
+    # 设置应用程序图标
+    #app.setWindowIcon(QIcon("icon.png"))
+
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
