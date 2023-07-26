@@ -279,9 +279,8 @@ class MainWindow(QMainWindow):
 
     def kill_adh(self):
         pid_string = self.execute_command("pidof AdGuardHome", False)
-        self.output_text.appendPlainText(pid_string)
         if pid_string:
-            pids = pid_string.split()
+            pids = pid_string.strip().split()
             for pid in pids:
                 self.kill_process(pid)
         else:
@@ -289,9 +288,8 @@ class MainWindow(QMainWindow):
 
     def kill_keep(self):
         pid_string = self.execute_command("pidof keepalived", False)
-        self.output_text.appendPlainText(pid_string)
         if pid_string:
-            pids = pid_string.split()
+            pids = pid_string.strip().split()
             for pid in pids:
                 self.kill_process(pid)
         else:
