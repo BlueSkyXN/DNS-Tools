@@ -170,7 +170,9 @@ class MainWindow(QMainWindow):
         # IP选择下拉框
         self.ip_selector = QComboBox(self)
         self.ip_selector.addItem("请选择IP")
+        self.ip_selector.setMinimumWidth(150)  # Set a minimum width for the dropdown
         self.menu_bar.setCornerWidget(self.ip_selector)
+
 
         # 加载配置文件
         self.configs = {}

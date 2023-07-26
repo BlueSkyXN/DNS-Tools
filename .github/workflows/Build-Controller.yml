@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Build_DNS-Controller_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
-          path: dist/ubuntu-22.04/DNS-Controller
+          path: dist/ubuntu-20.04/DNS-Controller
           
       - name: Upload-windows-2019
         if: ${{ matrix.os == 'windows-2019' }}
@@ -67,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Build_DNS-Controller_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
-          path: dist/ubuntu-22.04/*
+          path: dist/ubuntu-20.04/*
           
       - name: Upload-windows-2019
         if: ${{ matrix.os == 'windows-2019' }}
