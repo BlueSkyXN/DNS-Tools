@@ -1,6 +1,6 @@
 import paramiko
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QPushButton, QLabel, QLineEdit, QVBoxLayout, QGroupBox, QFormLayout, QMenuBar, QMenu, QAction, QPlainTextEdit, QInputDialog, QComboBox, QDialog, QDialogButtonBox, QIcon
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QPushButton, QLabel, QLineEdit, QVBoxLayout, QGroupBox, QFormLayout, QMenuBar, QMenu, QAction, QPlainTextEdit, QInputDialog, QComboBox, QDialog, QDialogButtonBox
 from PyQt5.QtCore import Qt
 import sys
 import json
@@ -285,10 +285,6 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
-    # 设置应用程序图标
-    #app.setWindowIcon(QIcon("icon.png"))
-
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
