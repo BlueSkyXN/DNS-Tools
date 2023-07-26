@@ -278,7 +278,39 @@ class MainWindow(QMainWindow):
         self.execute_command("pidof keepalived", False)
 
 
+    
     def kill_adh(self):
+        pids, ok = QInputDialog.getMultiLineText(self, "输入PID", "请输入AdGuardHome的PID，每行一个:")
+        if ok:
+            pids = pids.strip().split()
+            for pid in pids:
+                if pid:  # Only proceed if pid is not an empty string
+                    self.kill_process(pid)
+
+    
+    def kill_adh(self):
+        pids, ok = QInputDialog.getMultiLineText(self, "输入PID", "请输入AdGuardHome的PID，每行一个:")
+        if ok:
+            pids = pids.strip().split()
+            for pid in pids:
+                if pid:  # Only proceed if pid is not an empty string
+                    self.kill_process(pid)
+
+    def kill_keep(self):
+        pids, ok = QInputDialog.getMultiLineText(self, "输入PID", "请输入keepalived的PID，每行一个:")
+        if ok:
+            pids = pids.strip().split()
+            for pid in pids:
+                if pid:  # Only proceed if pid is not an empty string
+                    self.kill_process(pid)
+        
+        pids, ok = QInputDialog.getMultiLineText(self, "输入PID", "请输入keepalived的PID，每行一个:")
+        if ok:
+            pids = pids.strip().split()
+            for pid in pids:
+                if pid:  # Only proceed if pid is not an empty string
+                    self.kill_process(pid)
+        
         pid_string = self.execute_command("pidof AdGuardHome", False)
         if pid_string:
             pids = pid_string.strip().split()
