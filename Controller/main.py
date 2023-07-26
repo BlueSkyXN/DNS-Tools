@@ -296,6 +296,8 @@ class MainWindow(QMainWindow):
             self.output_text.appendPlainText("无法找到 keepalived 进程")
 
     def kill_process(self, pid):
+        print(f"当前执行的命令：{command}")
+    
         ip = self.ip_selector.currentText()
         if ip not in self.configs:
             self.output_text.appendPlainText("错误：未找到该IP的配置信息")
