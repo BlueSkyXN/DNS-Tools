@@ -3,6 +3,7 @@ import argparse
 from collections import Counter
 
 
+
 def main(input_file, output_file, chunksize, ip_address):
     total_counts = Counter()
     first_time_dict = {}
@@ -28,15 +29,13 @@ def main(input_file, output_file, chunksize, ip_address):
     result_df.columns = ['Domain', 'Count']
     
     # Add FirstTime and LastTime columns
-    result_df['FirstTime'] = result_df['Domain'].map(first_time_dict)
-    result_df['LastTime'] = result_df['Domain'].map(last_time_dict)
+    result_df['FirstTime'] = result_df['Domain'].map(first_time_dict).dt.strftime('%Y-%m-%d %H:%M:%S')
+    result_df['LastTime'] = result_df['Domain'].map(last_time_dict).dt.strftime('%Y-%m-%d %H:%M:%S')
     
     # Sort by count in descending order
     result_df = result_df.sort_values(by='Count', ascending=False)
 
     # Save the result to a new CSV file
-    result_df.to_csv(output_file, index=False)
-# Save the result to a new CSV file
     result_df.to_csv(output_file, index=False)
 
     print(f"域名统计已保存到 {output_file}")
@@ -45,7 +44,7 @@ def main(input_file, output_file, chunksize, ip_address):
 if __name__ == "__main__":
 
     # 命令行参数解析
-    parser = argparse.ArgumentParser(description='统计域名出现次数')
+    parser = argparse.ArgumentParser(description='针对目标IP的统计域名出现次数')
     parser.add_argument('-i', '--input', type=str, required=True, help='Path to input CSV file')
     parser.add_argument('-o', '--output', type=str, required=True, help='Path to output CSV file')
     parser.add_argument('-s', '--chunksize', type=int, default=10000, help='Number of lines to process at a time')
