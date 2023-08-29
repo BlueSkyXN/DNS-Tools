@@ -212,3 +212,141 @@ jobs:
         with:
           name: Build_IPStatsCounterForDomain_ALL_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
           path: dist/windows-2019/*
+
+  Build_DomainStatsCounterForIP_Plus:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [linux, windows]
+        include:
+          - build: linux
+            os: ubuntu-20.04
+          - build: windows
+            os: windows-2019
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+
+      - name: Set commit message
+        id: set_commit
+        run: |
+          if [ "${{ matrix.os }}" == "ubuntu-20.04" ]; then
+            echo "COMMIT_MESSAGE=$(git log --format=%B -1)" >> $GITHUB_ENV
+          elif [ "${{ matrix.os }}" == "windows-2019" ]; then
+            commit_message=$(git log --format=%B -1)
+            echo "COMMIT_MESSAGE=$commit_message" >> $GITHUB_ENV
+          fi
+        shell: bash
+        env:
+          pythonLocation: /opt/hostedtoolcache/Python/3.10.11/x64
+
+      - name: Install dependencies
+        run: |
+          python -m pip install pyinstaller argparse pandas --ignore-installed
+          python -m pip install --upgrade pip
+
+      - name: Build executable
+        run: |
+          pyinstaller --onefile --hidden-import pandas --hidden-import argparse --hidden-import collections.Counter --strip -w --name DomainStatsCounterForIP_Plus DataAnalysis/DomainStatsCounterForIP_Plus.py --distpath dist/${{ matrix.os }}
+
+      - name: Upload-ubuntu-20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_DomainStatsCounterForIP_Plus_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/ubuntu-20.04/DomainStatsCounterForIP_Plus
+          
+      - name: Upload-windows-2019
+        if: ${{ matrix.os == 'windows-2019' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_DomainStatsCounterForIP_Plus_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/windows-2019/DomainStatsCounterForIP_Plus.exe
+          
+      - name: Upload-ubuntu-20.04-all
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_DomainStatsCounterForIP_Plus_ALL_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/ubuntu-20.04/*
+          
+      - name: Upload-windows-2019-all
+        if: ${{ matrix.os == 'windows-2019' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_DomainStatsCounterForIP_Plus_ALL_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/windows-2019/*
+
+  Build_IPStatsCounterForDomain_Plus:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [linux, windows]
+        include:
+          - build: linux
+            os: ubuntu-20.04
+          - build: windows
+            os: windows-2019
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+
+      - name: Set commit message
+        id: set_commit
+        run: |
+          if [ "${{ matrix.os }}" == "ubuntu-20.04" ]; then
+            echo "COMMIT_MESSAGE=$(git log --format=%B -1)" >> $GITHUB_ENV
+          elif [ "${{ matrix.os }}" == "windows-2019" ]; then
+            commit_message=$(git log --format=%B -1)
+            echo "COMMIT_MESSAGE=$commit_message" >> $GITHUB_ENV
+          fi
+        shell: bash
+        env:
+          pythonLocation: /opt/hostedtoolcache/Python/3.10.11/x64
+
+      - name: Install dependencies
+        run: |
+          python -m pip install pyinstaller argparse pandas --ignore-installed
+          python -m pip install --upgrade pip
+
+      - name: Build executable
+        run: |
+          pyinstaller --onefile --hidden-import pandas --hidden-import argparse --hidden-import collections.Counter --strip -w --name IPStatsCounterForDomain_Plus DataAnalysis/IPStatsCounterForDomain_Plus.py --distpath dist/${{ matrix.os }}
+
+      - name: Upload-ubuntu-20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_IPStatsCounterForDomain_Plus_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/ubuntu-20.04/IPStatsCounterForDomain_Plus
+          
+      - name: Upload-windows-2019
+        if: ${{ matrix.os == 'windows-2019' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_IPStatsCounterForDomain_Plus_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/windows-2019/IPStatsCounterForDomain_Plus.exe
+          
+      - name: Upload-ubuntu-20.04-all
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_IPStatsCounterForDomain_Plus_ALL_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/ubuntu-20.04/*
+          
+      - name: Upload-windows-2019-all
+        if: ${{ matrix.os == 'windows-2019' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_IPStatsCounterForDomain_Plus_ALL_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
+          path: dist/windows-2019/*
