@@ -68,7 +68,7 @@ jobs:
           name: Build_DomainStatsCounter_ALL_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
           path: dist/ubuntu-20.04/*
           
-      - name: Upload-windows-2019
+      - name: Upload-windows-2019-all
         if: ${{ matrix.os == 'windows-2019' }}
         uses: actions/upload-artifact@v3
         with:
@@ -114,7 +114,7 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --onefile --hidden-import pandas --hidden-import argparse --hidden-import collections.Counter --strip -w --name DomainStatsCounterForIP DataAnalysis/DomainStatsCounterForIP.py--distpath dist/${{ matrix.os }}
+          pyinstaller --onefile --hidden-import pandas --hidden-import argparse --hidden-import collections.Counter --strip -w --name DomainStatsCounterForIP DataAnalysis/DomainStatsCounterForIP.py --distpath dist/${{ matrix.os }}
 
       - name: Upload-ubuntu-20.04
         if: ${{ matrix.os == 'ubuntu-20.04' }}
@@ -137,7 +137,7 @@ jobs:
           name: Build_DomainStatsCounterForIP_ALL_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
           path: dist/ubuntu-20.04/*
           
-      - name: Upload-windows-2019
+      - name: Upload-windows-2019-all
         if: ${{ matrix.os == 'windows-2019' }}
         uses: actions/upload-artifact@v3
         with:

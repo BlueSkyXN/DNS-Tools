@@ -67,7 +67,7 @@ jobs:
           name: Build_DNS-Controller_ALL_${{ matrix.os }}_v${{ env.COMMIT_MESSAGE }}
           path: dist/ubuntu-20.04/*
           
-      - name: Upload-windows-2019
+      - name: Upload-windows-2019-all
         if: ${{ matrix.os == 'windows-2019' }}
         uses: actions/upload-artifact@v3
         with:
