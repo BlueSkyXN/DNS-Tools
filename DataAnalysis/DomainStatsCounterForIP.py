@@ -2,8 +2,11 @@ import pandas as pd
 import argparse
 from collections import Counter
 
+
 def main(input_file, output_file, chunksize, ip_address):
     total_counts = Counter()
+    first_time_dict = {}
+    last_time_dict = {}
 
     # Using pandas to read chunks directly from the CSV file
     for chunk in pd.read_csv(input_file, chunksize=chunksize):
@@ -12,15 +15,28 @@ def main(input_file, output_file, chunksize, ip_address):
         
         # Count occurrences of domains in the "QH" column
         total_counts.update(Counter(filtered_chunk['QH']))
+        
+        # Update FirstTime and LastTime for each domain
+        for domain, time in zip(filtered_chunk['QH'], pd.to_datetime(filtered_chunk['T'])):
+            if domain not in first_time_dict or time < first_time_dict[domain]:
+                first_time_dict[domain] = time
+            if domain not in last_time_dict or time > last_time_dict[domain]:
+                last_time_dict[domain] = time
 
     # Convert the result to a DataFrame
     result_df = pd.DataFrame.from_dict(total_counts, orient='index').reset_index()
     result_df.columns = ['Domain', 'Count']
     
+    # Add FirstTime and LastTime columns
+    result_df['FirstTime'] = result_df['Domain'].map(first_time_dict)
+    result_df['LastTime'] = result_df['Domain'].map(last_time_dict)
+    
     # Sort by count in descending order
     result_df = result_df.sort_values(by='Count', ascending=False)
 
     # Save the result to a new CSV file
+    result_df.to_csv(output_file, index=False)
+# Save the result to a new CSV file
     result_df.to_csv(output_file, index=False)
 
     print(f"域名统计已保存到 {output_file}")
