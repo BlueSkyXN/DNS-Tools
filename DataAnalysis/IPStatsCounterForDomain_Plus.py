@@ -3,7 +3,7 @@ import pandas as pd
 import argparse
 from collections import Counter
 
-def main(input_file, output_file, chunksize, domain_name):
+def main(input_file, output_file, chunksize, domain_name, mode):
     total_counts = Counter()
     first_time_dict = {}
     last_time_dict = {}
@@ -53,5 +53,6 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', type=str, required=True, help='Path to output CSV file')
     parser.add_argument('-s', '--chunksize', type=int, default=10000, help='Number of lines to process at a time')
     parser.add_argument("-d", "--domain", required=True, help="Specify the domain to filter.")
+    parser.add_argument('-m', '--mode', type=str, default='exact', choices=['exact', 'fuzzy'], help='Select the matching mode: exact or fuzzy.')
     args = parser.parse_args()
-    main(args.input, args.output, args.chunksize, args.domain)
+    main(args.input, args.output, args.chunksize, args.domain, args.mode)

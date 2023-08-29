@@ -55,5 +55,6 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', type=str, required=True, help='Path to output CSV file')
     parser.add_argument('-s', '--chunksize', type=int, default=10000, help='Number of lines to process at a time')
     parser.add_argument("-c", "--ip", required=True, help="Specify the IP to filter.")
+    parser.add_argument('-m', '--mode', type=str, default='exact', choices=['exact', 'fuzzy'], help='Select the matching mode: exact or fuzzy.')
     args = parser.parse_args()
-    main(args.input, args.output, args.chunksize, args.ip)
+    main(args.input, args.output, args.chunksize, args.ip, args.mode)
