@@ -37,6 +37,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    main(args.input, args.output, args.chunksize)
+    main(args.input, args.output, args.chunksize, args.ip)
     parser.add_argument("-c", "--ip", required=True, help="Specify the IP to filter.")
     main(args.input, args.output, args.chunksize, args.ip)
