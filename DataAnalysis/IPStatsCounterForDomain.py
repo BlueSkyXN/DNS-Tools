@@ -8,7 +8,7 @@ def main(input_file, output_file, chunksize, domain_name):
     last_time_dict = {}
 
     # Using pandas to read chunks directly from the CSV file
-    for chunk in pd.read_csv(input_file, chunksize=chunksize):
+    for chunk in pd.read_csv(input_file, chunksize=chunksize, dtype={11: str}):
         # Filter rows based on the specified domain name
         filtered_chunk = chunk[chunk['QH'] == domain_name]
         
@@ -16,7 +16,7 @@ def main(input_file, output_file, chunksize, domain_name):
         total_counts.update(Counter(filtered_chunk['IP']))
         
         # Update FirstTime and LastTime for each IP
-        for ip, time in zip(filtered_chunk['IP'], pd.to_datetime(filtered_chunk['T'])):
+        for ip, time in zip(filtered_chunk['IP'], pd.to_datetime(filtered_chunk['T'], format='%Y-%m-%dT%H:%M:%S.%f%z')):
             if ip not in first_time_dict or time < first_time_dict[ip]:
                 first_time_dict[ip] = time
             if ip not in last_time_dict or time > last_time_dict[ip]:
