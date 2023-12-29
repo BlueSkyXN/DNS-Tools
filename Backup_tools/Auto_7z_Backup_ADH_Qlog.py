@@ -55,7 +55,7 @@ def create_backup(config_path):
         shutil.copy(source_file, temp_file)
 
         # 使用7z命令创建压缩文件
-        subprocess.run([sevenz_path, "a", backup_dir + backup_file, temp_file])
+        subprocess.run([sevenz_path, "a", backup_dir + backup_file, temp_file, "-mx9", "-mmt4"])
 
     print(f"{notification_message_prefix} {backup_file}")
     NotifytoWebhook(webhook_url, f"{notification_message_prefix} {backup_file}")
