@@ -4,8 +4,9 @@ import os
 import shutil
 import tempfile
 import configparser
-import requests  # 从 Notify_to_Webhook.py 导入
-import json  # 从 Notify_to_Webhook.py 导入
+import requests
+import json
+import argparse
 
 def NotifytoWebhook(webhook_url, message):
     headers = {
@@ -26,10 +27,10 @@ def NotifytoWebhook(webhook_url, message):
     else:
         print("Failed to send message. Response code:", response.status_code)
 
-def create_backup():
+def create_backup(config_path):
     # 读取配置文件
     config = configparser.ConfigParser()
-    config.read('backup-config.ini')
+    config.read(config_path)
 
     source_file = config.get('DEFAULT', 'SourceFile')
     backup_dir = config.get('DEFAULT', 'BackupDir')
@@ -60,4 +61,13 @@ def create_backup():
     NotifytoWebhook(webhook_url, f"{notification_message_prefix} {backup_file}")
 
 if __name__ == "__main__":
-    create_backup()
+    # 创建解析器
+    parser = argparse.ArgumentParser(description='Backup files and notify via webhook.')
+    # 添加-c --config 参数
+    parser.add_argument('-c', '--config', type=str, default='backup-config.ini',
+                        help='Path to the configuration file')
+    # 解析命令行参数
+    args = parser.parse_args()
+
+    # 调用create_backup函数，并传入配置文件路径
+    create_backup(args.config)
