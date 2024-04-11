@@ -52,7 +52,7 @@ process_dns_ip() {
         latency=${LATENCY:-"N/A"}
     fi
 
-    output_line="$line | $ecs_support | $query_success | $latency"
+    output_line="$line,$ecs_support,$query_success,$latency"
     echo "$output_line" >> "$TEMP_RESULT"
 }
 
@@ -68,10 +68,9 @@ wait  # 确保所有后台进程都已完成
 
 # 打印表头并输出结果
 {
-    printf "%-20s | %-12s | %-15s | %-s\n" "DNS IP" "ECS Support" "Query Success" "Latency (ms)"
-    echo "---------------------|--------------|-----------------|----------------"
+    echo "DNS IP,ECS Support,Query Success,Latency (ms)"
     cat "$TEMP_RESULT"
-} | tee >(awk -F ' | ' '{print $1","$3","$5","$7}' > dns_check_results.csv)
+} | tee dns_check_results.csv
 
 rm "$TEMP_RESULT"  # 清理临时文件
 echo "Results have been saved to dns_check_results.csv"
